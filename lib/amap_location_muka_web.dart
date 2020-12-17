@@ -3,16 +3,18 @@ import 'dart:async';
 // of your plugin as a separate package, instead of inlining it in the same
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html show window;
+import 'dart:html' as html show window, Element;
 
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'amap_core.dart';
 
 /// A web implementation of the AmapLocationMuka plugin.
 class AmapLocationMukaWeb {
+  bool init = false;
   static void registerWith(Registrar registrar) {
     final MethodChannel channel = MethodChannel(
-      'amap_location_muka',
+      'plugins.muka.com/amap_location',
       const StandardMethodCodec(),
       registrar.messenger,
     );
@@ -26,9 +28,8 @@ class AmapLocationMukaWeb {
   /// https://flutter.dev/go/federated-plugins
   Future<dynamic> handleMethodCall(MethodCall call) async {
     switch (call.method) {
-      case 'getPlatformVersion':
-        return getPlatformVersion();
-        break;
+      case 'fetch':
+        return fetchLocation();
       default:
         throw PlatformException(
           code: 'Unimplemented',
@@ -38,8 +39,7 @@ class AmapLocationMukaWeb {
   }
 
   /// Returns a [String] containing the version of the platform.
-  Future<String> getPlatformVersion() {
-    final version = html.window.navigator.userAgent;
-    return Future.value(version);
+  Future<String> fetchLocation() {
+    print(AMap());
   }
 }

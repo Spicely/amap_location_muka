@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:amap_location_muka/amap_location_muka.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -23,7 +24,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     Future.delayed(Duration(milliseconds: 100), () {
-      initPlatformState();
+      // initPlatformState();
     });
   }
 

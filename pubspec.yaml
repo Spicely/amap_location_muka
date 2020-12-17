@@ -15,6 +15,7 @@ dependencies:
   amap_core: ^0.0.2
   path: ^1.8.0-nullsafety
   process: ^4.0.0-nullsafety
+  js: ^0.6.2
 
 dev_dependencies:
   flutter_test:
