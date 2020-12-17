@@ -3,11 +3,12 @@ import 'dart:async';
 // of your plugin as a separate package, instead of inlining it in the same
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html show window, Element;
 
+import 'package:js/js_util.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-import 'amap_core.dart';
+
+import 'amap_web_amap.dart';
 
 /// A web implementation of the AmapLocationMuka plugin.
 class AmapLocationMukaWeb {
@@ -40,6 +41,22 @@ class AmapLocationMukaWeb {
 
   /// Returns a [String] containing the version of the platform.
   Future<String> fetchLocation() {
-    print(AMap());
+    MapOptions _mapOptions = MapOptions(
+      zoom: 0,
+      viewMode: '2D',
+    );
+    AMap aMap = AMap('location', _mapOptions);
+    aMap.plugin('AMap.Geolocation', () {
+      Geolocation geolocation = Geolocation();
+      aMap.addControl(geolocation);
+      geolocation.getCurrentPosition((status, result) {
+        if (status == 'complete') {
+          print(result);
+        } else {
+          print(result);
+        }
+      });
+    });
+    return Future.value(null);
   }
 }
