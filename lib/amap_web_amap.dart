@@ -24,7 +24,7 @@ class MapOptions {
 
 @JS()
 class Geolocation {
-  external Geolocation(GeoOptions? opts);
+  external Geolocation({GeoOptions? opts});
   external getCurrentPosition(void Function(String status, dynamic result) callback);
 }
 
