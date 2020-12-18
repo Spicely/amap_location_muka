@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  amap_core: 1.0.0-nullsafety.0
+  amap_core: ^1.0.0-nullsafety.0
   js: ^0.6.2
 
 dev_dependencies:
