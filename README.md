@@ -36,6 +36,15 @@ Flutter高德定位插件
     </array>
 ```
 
+## Web
+```
+    /// 在html文件中加入
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=你的key"></script>
+
+    /// body中增加
+    <div id="muka_location"></div>
+```
+
 ## 支持
  - [x] 单次获取位置信息
  - [x] 持续获取位置信息

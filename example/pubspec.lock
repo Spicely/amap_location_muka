@@ -7,7 +7,7 @@ packages:
       name: amap_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-nullsafety.0"
+    version: "1.0.0-nullsafety.1"
   amap_location_muka:
     dependency: "direct main"
     description:

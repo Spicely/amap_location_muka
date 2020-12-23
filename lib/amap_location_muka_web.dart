@@ -4,10 +4,9 @@ import 'dart:async';
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
 
+import 'package:amap_core/amap_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-
-import 'amap_web_amap.dart';
 
 /// A web implementation of the AmapLocationMuka plugin.
 class AmapLocationMukaWeb {
@@ -39,23 +38,35 @@ class AmapLocationMukaWeb {
   }
 
   /// Returns a [String] containing the version of the platform.
-  Future<String> fetchLocation() {
+  Future<dynamic> fetchLocation() {
+    Completer completer = Completer<Map<String, dynamic>>();
     MapOptions _mapOptions = MapOptions(
       zoom: 0,
       viewMode: '2D',
     );
     AMap aMap = AMap('location', _mapOptions);
-    aMap.plugin('AMap.Geolocation', () {
-      Geolocation geolocation = Geolocation();
+
+    aMap.plugin(['AMap.Geolocation'], allowInterop(() {
+      Geolocation geolocation = Geolocation(GeoOptions());
       aMap.addControl(geolocation);
-      geolocation.getCurrentPosition((status, result) {
+      geolocation.getCurrentPosition(allowInterop((status, result) {
         if (status == 'complete') {
-          print(result);
+          completer.complete(Location(
+            latitude: result.position.lat,
+            longitude: result.position.lng,
+            country: result.addressComponent.country,
+            province: result.addressComponent.province,
+            city: result.addressComponent.city,
+            district: result.addressComponent.district,
+            street: result.addressComponent.street,
+            address: result.formattedAddress,
+            accuracy: 0.0,
+          ).toJson());
         } else {
-          print(result);
+          completer.completeError(result.message);
         }
-      });
-    });
-    return Future.value(null);
+      }));
+    }));
+    return completer.future;
   }
 }
