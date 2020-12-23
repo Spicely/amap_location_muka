@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:html';
 // In order to *not* need this ignore, consider extracting the "web" version
 // of your plugin as a separate package, instead of inlining it in the same
 // package as the core of your plugin.
@@ -11,6 +12,7 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 /// A web implementation of the AmapLocationMuka plugin.
 class AmapLocationMukaWeb {
   bool init = false;
+  static StreamController<Event> customStreamController = StreamController();
   static void registerWith(Registrar registrar) {
     final MethodChannel channel = MethodChannel(
       'plugins.muka.com/amap_location',
@@ -29,7 +31,16 @@ class AmapLocationMukaWeb {
     switch (call.method) {
       case 'fetch':
         return fetchLocation();
+      case 'start':
+        return Future.value(null);
+      case 'stop':
+        return Future.value();
+      case 'enableBackground':
+        return Future.value();
+      case 'disableBackground':
+        return Future.value();
       default:
+        print(2222);
         throw PlatformException(
           code: 'Unimplemented',
           details: 'amap_location_muka for web doesn\'t implement \'${call.method}\'',
