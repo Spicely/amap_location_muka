@@ -1,7 +1,6 @@
 library amap_location_muka;
 
 import 'dart:async';
-import 'dart:html';
 import 'package:amap_core/amap_core.dart';
 import 'package:flutter/services.dart';
 

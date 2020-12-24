@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import AMapFoundationKit
 
 public class SwiftAmapLocationMukaPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
