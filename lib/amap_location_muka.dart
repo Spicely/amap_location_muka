@@ -3,6 +3,7 @@ library amap_location_muka;
 import 'dart:async';
 import 'package:amap_core/amap_core.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 export 'package:amap_core/amap_core.dart';
 
@@ -80,9 +81,9 @@ class AmapLocation {
   ///
   /// accuracy 精确度 [ 仅适用ios ]
   static Future<Future<Null> Function()> start({
-    required AmapLocationListen listen,
+    AmapLocationListen listen,
     AmapLocationMode mode = AmapLocationMode.HIGHT_ACCURACY,
-    int? time,
+    int time,
     AmapLocationAccuracy accuracy = AmapLocationAccuracy.THREE_KILOMETERS,
   }) async {
     await _channel.invokeMethod('start', {
@@ -100,10 +101,10 @@ class AmapLocation {
 
   /// 启动后台服务
   static Future<void> enableBackground({
-    required String title,
-    required String label,
-    required String assetName,
-    bool? vibrate,
+    @required String title,
+    @required String label,
+    @required String assetName,
+    bool vibrate,
   }) async {
     await _channel.invokeMethod('enableBackground', {'title': title, 'label': label, 'assetName': assetName, 'vibrate': vibrate ?? true});
   }
