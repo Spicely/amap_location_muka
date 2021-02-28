@@ -17,7 +17,7 @@ Flutter高德定位插件
   s.public_header_files = 'Classes/**/*.h'
   s.static_framework = true
   s.dependency 'Flutter'
-  s.dependency 'AMapLocation'
+  s.dependency 'AMapLocation-NO-IDFA', '2.6.5'
   s.platform = :ios, '8.0'
 
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
