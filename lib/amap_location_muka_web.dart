@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:html';
+import 'package:universal_html/html.dart';
 import 'dart:js' show allowInterop;
 // In order to *not* need this ignore, consider extracting the "web" version
 // of your plugin as a separate package, instead of inlining it in the same
