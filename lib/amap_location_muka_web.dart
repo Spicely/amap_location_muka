@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:universal_html/html.dart';
-import 'dart:js' show allowInterop;
 // In order to *not* need this ignore, consider extracting the "web" version
 // of your plugin as a separate package, instead of inlining it in the same
 // package as the core of your plugin.
@@ -9,6 +7,8 @@ import 'dart:js' show allowInterop;
 import 'package:amap_core/amap_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:js/js.dart';
+import 'package:universal_html/html.dart';
 
 /// A web implementation of the AmapLocationMuka plugin.
 class AmapLocationMukaWeb {
