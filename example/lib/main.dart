@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -48,7 +49,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    await [Permission.locationAlways, Permission.locationWhenInUse, Permission.location].request();
+    if (!kIsWeb) {
+      await [Permission.locationAlways, Permission.locationWhenInUse, Permission.location].request();
+    }
     print('单次定位');
     _location = await AmapLocation.fetch();
     print(_location.toJson());

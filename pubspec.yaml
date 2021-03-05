@@ -4,7 +4,7 @@ version: 0.1.0
 author: Spicely
 homepage: https://github.com/Spicely/amap_location_muka
 environment:
-  sdk: '>=2.12.0-259.16.beta <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
   flutter: ">=1.20.0"
 
 dependencies:
@@ -12,10 +12,9 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  amap_core: ^1.0.0-nullsafety.2
+  amap_core: ^1.0.1
   universal_html: ^1.2.4
   async: ^2.5.0
-  js: ^0.6.3
 
 dev_dependencies:
   flutter_test:

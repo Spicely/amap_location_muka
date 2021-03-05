@@ -7,13 +7,15 @@ import 'dart:async';
 import 'package:amap_core/amap_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-import 'package:js/js.dart';
 import 'package:universal_html/html.dart';
+import 'package:universal_html/js.dart';
 
 /// A web implementation of the AmapLocationMuka plugin.
 class AmapLocationMukaWeb {
   bool init = false;
+
   static StreamController<Event> customStreamController = StreamController();
+
   static void registerWith(Registrar registrar) {
     final MethodChannel channel = MethodChannel(
       'plugins.muka.com/amap_location',

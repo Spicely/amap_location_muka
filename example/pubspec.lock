@@ -7,7 +7,7 @@ packages:
       name: amap_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-nullsafety.2"
+    version: "1.0.1"
   amap_location_muka:
     dependency: "direct main"
     description:
@@ -57,20 +57,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
-  convert:
-    dependency: transitive
-    description:
-      name: convert
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.1"
   crypto:
     dependency: transitive
     description:
       name: crypto
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.5"
+    version: "3.0.0"
   csslib:
     dependency: transitive
     description:
@@ -230,7 +223,7 @@ packages:
       name: universal_io
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "2.0.0"
   vector_math:
     dependency: transitive
     description:
@@ -246,5 +239,5 @@ packages:
     source: hosted
     version: "0.1.2"
 sdks:
-  dart: ">=2.12.0-259.16.beta <3.0.0"
+  dart: ">=2.12.0 <3.0.0"
   flutter: ">=1.20.0"
