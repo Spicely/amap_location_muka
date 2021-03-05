@@ -38,7 +38,7 @@ Flutter高德定位插件
 
 ## Web
 ```
-    /// 在html文件中加入
+    /// 在html文件中加入  目前web只支持单次定位
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=你的key"></script>
 ```
 
@@ -66,7 +66,6 @@ Flutter高德定位插件
     Location location = await AmapLocation.fetch();
     print(location.toJson());
 
-    /// 后台定位 目前有问题
     /// vibrate 属性只支持一次性设置 设置后除非卸载app否则不会变更
     /// 另一种办法是变更chanlid 但对于定位来说 一般不会变更 暂时不考虑提供参数
     class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
