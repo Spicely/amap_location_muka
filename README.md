@@ -5,7 +5,7 @@ Flutter高德定位插件
 ## 引入方式
 
 ```
-    amap_location_muka: ^0.0.1+2
+    amap_location_muka: ^0.1.0
 ```
 
 ## Android

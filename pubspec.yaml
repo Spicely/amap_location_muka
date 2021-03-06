@@ -1,7 +1,6 @@
 name: amap_location_muka
 description: Flutter高德定位插件
 version: 0.1.0
-author: Spicely
 homepage: https://github.com/Spicely/amap_location_muka
 environment:
   sdk: '>=2.12.0 <3.0.0'
