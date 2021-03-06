@@ -94,7 +94,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               onPressed: () async {
                 print('持续定位');
                 stopLocation = await AmapLocation.start(
-                  time: 10000,
+                  time: 1000,
                   listen: (Location location) {
                     print(location.toJson());
                     print('持续定位222');

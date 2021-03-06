@@ -2,6 +2,8 @@ library amap_location_muka;
 
 import 'dart:async';
 import 'package:amap_core/amap_core.dart';
+import 'package:async/async.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 export 'package:amap_core/amap_core.dart';
@@ -54,6 +56,18 @@ class AmapLocation {
 
   static const _event = EventChannel('plugins.muka.com/amap_location_event');
 
+  static StreamController<dynamic> customStreamController = StreamController<dynamic>();
+
+  static StreamSubscription<dynamic>? _stream;
+
+  static Stream<dynamic> get _eventStream {
+    if (kIsWeb) {
+      return customStreamController.stream;
+    } else {
+      return _event.receiveBroadcastStream();
+    }
+  }
+
   /// 单次定位
   ///
   /// androidMode 定位方式 [ 仅适用android ]
@@ -90,9 +104,11 @@ class AmapLocation {
       'time': time ?? 2000,
       'accuracy': accuracy.index,
     });
-    _event.receiveBroadcastStream().listen((dynamic data) {
-      listen!(Location.fromJson(data));
-    });
+    if (_stream == null) {
+      _stream = _eventStream.listen((dynamic data) {
+        listen!(Location.fromJson(data));
+      });
+    }
     return () async {
       await _channel.invokeMethod('stop');
     };

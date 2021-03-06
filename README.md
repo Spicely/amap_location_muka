@@ -38,7 +38,7 @@ Flutter高德定位插件
 
 ## Web
 ```
-    /// 在html文件中加入  目前web只支持单次定位
+    /// 在html文件中加入
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=你的key"></script>
 ```
 
@@ -52,7 +52,7 @@ Flutter高德定位插件
 #### AmapLocation
 
 ```
-    /// 持续定位
+    /// 持续定位 [注意全局只能有一个持续监听]
     stopLocation = await AmapLocation.start(
         listen: (Location location) {
             print(location.toJson());

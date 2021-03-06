@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>amap_location_muka_example</string>
+	<string>example</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -41,16 +41,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-    <string>App需要您的同意,才能访问位置</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>App需要您的同意,才能访问位置</string>
-    <key>amap_key</key>
-    <string>239aa734a203e8ee6d7740edf762afe0</string>
-    <key>UIBackgroundModes</key> 
-    <array> 
-        <string>location</string>
-        <string>audio</string> 
-    </array>
 </dict>
 </plist>

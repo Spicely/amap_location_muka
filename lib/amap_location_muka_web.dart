@@ -5,19 +5,22 @@ import 'dart:async';
 // ignore: avoid_web_libraries_in_flutter
 
 import 'package:amap_core/amap_core.dart';
+import 'package:async/async.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:universal_html/html.dart';
 import 'package:universal_html/js.dart';
 
+import 'amap_location_muka.dart';
+
 /// A web implementation of the AmapLocationMuka plugin.
 class AmapLocationMukaWeb {
+  Timer? _timer;
+
   bool init = false;
 
-  static StreamController<Event> customStreamController = StreamController();
-
   static void registerWith(Registrar registrar) {
-    final MethodChannel channel = MethodChannel(
+    MethodChannel channel = MethodChannel(
       'plugins.muka.com/amap_location',
       const StandardMethodCodec(),
       registrar.messenger,
@@ -35,15 +38,18 @@ class AmapLocationMukaWeb {
       case 'fetch':
         return fetchLocation();
       case 'start':
-        return Future.value(null);
+        _timer?.cancel();
+        _timer = null;
+        return listenLocation(call.arguments);
       case 'stop':
-        return Future.value();
+        _timer?.cancel();
+        _timer = null;
+        return Future.value(null);
       case 'enableBackground':
-        return Future.value();
+        return Future.value(null);
       case 'disableBackground':
-        return Future.value();
+        return Future.value(null);
       default:
-        print(2222);
         throw PlatformException(
           code: 'Unimplemented',
           details: 'amap_location_muka for web doesn\'t implement \'${call.method}\'',
@@ -51,7 +57,7 @@ class AmapLocationMukaWeb {
     }
   }
 
-  /// Returns a [String] containing the version of the platform.
+  /// Returns a [Location]
   Future<dynamic> fetchLocation() {
     Completer completer = Completer<Map<String, dynamic>>();
     MapOptions _mapOptions = MapOptions(
@@ -82,5 +88,39 @@ class AmapLocationMukaWeb {
       }));
     }));
     return completer.future;
+  }
+
+  /// Returns a [bool]
+  Future<bool> listenLocation(dynamic data) {
+    _timer = Timer.periodic(Duration(milliseconds: data['time']), (Timer time) {
+      MapOptions _mapOptions = MapOptions(
+        zoom: 0,
+        viewMode: '2D',
+      );
+      AMap aMap = AMap('location', _mapOptions);
+
+      aMap.plugin(['AMap.Geolocation'], allowInterop(() {
+        Geolocation geolocation = Geolocation(GeoOptions());
+        aMap.addControl(geolocation);
+        geolocation.getCurrentPosition(allowInterop((status, result) {
+          if (status == 'complete') {
+            AmapLocation.customStreamController.add(Location(
+              latitude: result.position.lat,
+              longitude: result.position.lng,
+              country: result.addressComponent.country,
+              province: result.addressComponent.province,
+              city: result.addressComponent.city,
+              district: result.addressComponent.district,
+              street: result.addressComponent.street,
+              address: result.formattedAddress,
+              accuracy: 0.0,
+            ).toJson());
+          } else {
+            AmapLocation.customStreamController.add(result.message);
+          }
+        }));
+      }));
+    });
+    return Future.value(true);
   }
 }
