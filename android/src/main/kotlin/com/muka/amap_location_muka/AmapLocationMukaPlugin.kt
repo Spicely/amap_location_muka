@@ -11,8 +11,11 @@ import android.os.PowerManager
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.amap.api.fence.GeoFenceClient
+import com.amap.api.fence.GeoFenceClient.GEOFENCE_IN
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
+import com.amap.api.location.DPoint
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -21,6 +24,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import kotlin.random.Random
+
 
 /** AmapLocationMukaPlugin */
 class AmapLocationMukaPlugin: Service(), FlutterPlugin, MethodCallHandler, EventChannel.StreamHandler{
@@ -106,6 +110,14 @@ class AmapLocationMukaPlugin: Service(), FlutterPlugin, MethodCallHandler, Event
         watchClient.disableBackgroundLocation(true)
         notificationManager?.deleteNotificationChannel(channelId)
         result.success(null)
+      }
+      "addGeoFence" -> {
+        var latlng = (call.argument("centerPoint") as Map<String, Any>?)!!
+        var centerPoint = DPoint();
+        centerPoint.latitude = latlng["latitude"] as Double
+        centerPoint.longitude = latlng["longitude"] as Double
+        val mGeoFenceClient = GeoFenceClient(pluginBinding.applicationContext)
+        mGeoFenceClient.setActivateAction(GEOFENCE_IN|GEOFENCE_OUT|GEOFENCE_STAYED)
       }
       else -> {
         result.notImplemented()

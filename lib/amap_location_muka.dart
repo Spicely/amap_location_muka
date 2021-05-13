@@ -19,6 +19,17 @@ enum AmapLocationMode {
   DEVICE_SENSORS,
 }
 
+enum AmapGeoFenceActivateAction {
+  /// 进入地理围栏
+  GEOFENCE_IN,
+
+  /// 退出地理围栏\
+  GEOFENCE_OUT,
+
+  ///停留在地理围栏内10分钟
+  GEOFENCE_STAYED,
+}
+
 /// 仅IOS可用
 enum AmapLocationAccuracy {
   /// 最快 精确度最底 约秒到
@@ -131,7 +142,12 @@ class AmapLocation {
   /// [centerPoint] 中心坐标
   static Future<void> addGeoFence(
     LatLng centerPoint,
+    // {
+    //   AmapGeoFenceActivateAction activeAction,
+    // }
   ) async {
-    await _channel.invokeMethod('disableBackground');
+    await _channel.invokeMethod('addGeoFence', {
+      'centerPoint': centerPoint.toJson(),
+    });
   }
 }
