@@ -85,13 +85,11 @@ class AmapLocation {
 
   /// 持续定位
   ///
-  /// time 间隔时间 默认 2000
+  /// [time] 间隔时间 默认 2000
   ///
-  /// mode 定位方式 [ 仅适用android ]
+  /// [mode] 定位方式 [ 仅适用android ]
   ///
-  /// geocode 返回逆编码信息
-  ///
-  /// accuracy 精确度 [ 仅适用ios ]
+  /// [accuracy] 精确度 [ 仅适用ios ]
   static Future<Future<Null> Function()> start({
     AmapLocationListen? listen,
     AmapLocationMode mode = AmapLocationMode.HIGHT_ACCURACY,
@@ -125,6 +123,15 @@ class AmapLocation {
 
   /// 关闭后台服务
   static Future<void> disableBackground() async {
+    await _channel.invokeMethod('disableBackground');
+  }
+
+  /// 创建自定义围栏
+  ///
+  /// [centerPoint] 中心坐标
+  static Future<void> addGeoFence(
+    LatLng centerPoint,
+  ) async {
     await _channel.invokeMethod('disableBackground');
   }
 }
