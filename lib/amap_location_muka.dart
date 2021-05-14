@@ -137,17 +137,57 @@ class AmapLocation {
     await _channel.invokeMethod('disableBackground');
   }
 
-  /// 创建自定义围栏
+  /// 根据关键字创建围栏
   ///
-  /// [centerPoint] 中心坐标
-  static Future<void> addGeoFence(
-    LatLng centerPoint,
-    // {
-    //   AmapGeoFenceActivateAction activeAction,
-    // }
-  ) async {
-    await _channel.invokeMethod('addGeoFence', {
-      'centerPoint': centerPoint.toJson(),
+  /// [keyword] POI关键字
+  ///
+  /// [poiType] POI类型
+  ///
+  /// [city] POI所在的城市名称
+  ///
+  /// [customId] 与围栏关联的自有业务Id
+  ///
+  static Future<void> addGeoFenceKeyword(String keyword, String poiType, String city, String customId) async {
+    await _channel.invokeMethod('addGeoFenceKeyword', {
+      'keyword': keyword,
+      'poiType': poiType,
+      'city': city,
+      'customId': customId,
+    });
+  }
+
+  /// 根据周边POI创建围栏
+  ///
+  /// [keyword] POI关键字
+  ///
+  /// [poiType] POI类型
+  ///
+  /// [point] 周边区域中心点的经纬度，以此中心点建立周边地理围栏
+  ///
+  /// [aroundRadius] 周边半径，0-50000米，默认3000米
+  ///
+  /// [customId] 与围栏关联的自有业务Id
+  ///
+  static Future<void> addGeoFencePoint(String keyword, String poiType, LatLng point, double aroundRadius, String customId) async {
+    await _channel.invokeMethod('addGeoFencePoint', {
+      'keyword': keyword,
+      'poiType': poiType,
+      'point': point.toJson(),
+      'aroundRadius': aroundRadius,
+      'customId': customId,
+    });
+  }
+
+  /// 创建行政区划围栏
+  ///
+  /// [keyword] 行政区划关键字
+  ///
+  /// [customId] 与围栏关联的自有业务Id
+  ///
+  static Future<void> addGeoFenceArea(String keyword, String customId) async {
+    await _channel.invokeMethod('addGeoFenceArea', {
+      'keyword': keyword,
+      'customId': customId,
     });
   }
 }
