@@ -211,8 +211,6 @@ class AmapLocation {
   ///
   /// [points] 多边形的边界坐标点，最少传3个
   ///
-  /// [radius] 要创建的围栏半径 ，半径无限制，单位米
-  ///
   /// [customId] 与围栏关联的自有业务Id
   ///
   static Future<void> addGeoFencePolygon(List<LatLng> points, String customId) async {
