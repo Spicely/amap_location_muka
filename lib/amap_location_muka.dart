@@ -190,4 +190,36 @@ class AmapLocation {
       'customId': customId,
     });
   }
+
+  /// 创建自定义围栏
+  ///
+  /// [point] 围栏中心点
+  ///
+  /// [radius] 要创建的围栏半径 ，半径无限制，单位米
+  ///
+  /// [customId] 与围栏关联的自有业务Id
+  ///
+  static Future<void> addGeoFenceDiy(LatLng point, String radius, String customId) async {
+    await _channel.invokeMethod('addGeoFenceDiy', {
+      'point': point,
+      'radius': radius,
+      'customId': customId,
+    });
+  }
+
+  /// 创建自定义围栏
+  ///
+  /// [points] 多边形的边界坐标点，最少传3个
+  ///
+  /// [radius] 要创建的围栏半径 ，半径无限制，单位米
+  ///
+  /// [customId] 与围栏关联的自有业务Id
+  ///
+  static Future<void> addGeoFencePolygon(List<LatLng> points, String customId) async {
+    assert(points.length < 3, '多边形的边界坐标点最少传3个');
+    await _channel.invokeMethod('addGeoFencePolygon', {
+      'points': points,
+      'customId': customId,
+    });
+  }
 }
