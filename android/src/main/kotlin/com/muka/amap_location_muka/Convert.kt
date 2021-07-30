@@ -1,7 +1,6 @@
 package com.muka.amap_location_muka
 
 import com.amap.api.location.AMapLocation
-import com.amap.api.location.DPoint
 
 
 class Convert {

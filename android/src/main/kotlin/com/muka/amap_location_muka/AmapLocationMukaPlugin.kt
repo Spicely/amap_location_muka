@@ -12,7 +12,6 @@ import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.amap.api.fence.GeoFenceClient
-import com.amap.api.fence.GeoFenceClient.GEOFENCE_IN
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.DPoint
@@ -173,15 +172,15 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
                 var centerPoint = DPoint()
                 centerPoint.latitude = point["latitude"] as Double
                 centerPoint.longitude = point["longitude"] as Double
-                mGeoFenceClient.addGeoFence(centerPoint, radius, customId)
+                mGeoFenceClient.addGeoFence(centerPoint, radius.toFloat(), customId)
             }
             "addGeoFencePolygon" -> {
                 /// 创建自定义围栏
-                var points = (call.argument("points") as List<Map<String, Any>?>)!!
+                var points = (call.argument("points") as List<Map<String,Any>>?)!!
                 var customId = (call.argument("customId") as String?)!!
-                val pois: List<DPoint?>? = ArrayList<DPoint?>()
+                val pois: ArrayList<DPoint> = ArrayList<DPoint>()
                 points.forEach {
-                    pois.add(DPoint(it["latitude"], it["longitude"]))
+                    pois.add(DPoint(it?.get("latitude") as Double, it["longitude"] as Double))
                 }
                 mGeoFenceClient.addGeoFence(pois, customId)
             }
