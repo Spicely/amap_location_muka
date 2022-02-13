@@ -1,5 +1,6 @@
 package com.muka.amap_location_muka
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -96,6 +97,17 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
                     locationClient.stopLocation()
                 }
                 locationClient.startLocation()
+            }
+            "updatePrivacyShow" -> {
+                var hasContains: Boolean = call.argument("hasContains")!!
+                var hasShow: Boolean = call.argument("hasShow")!!
+                AMapLocationClient.updatePrivacyShow(pluginBinding.applicationContext,hasContains, hasShow)
+                result.success(null)
+            }
+            "updatePrivacyAgree" -> {
+                var hasAgree: Boolean = call.argument("hasAgree")!!
+                AMapLocationClient.updatePrivacyAgree(pluginBinding.applicationContext,hasAgree)
+                result.success(null)
             }
             "start" -> {
                 var mode: Any? = call.argument("mode")
@@ -205,6 +217,7 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
         }
     }
 
+    @SuppressLint("WrongConstant")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         var flags = flags
         if (intent != null) {
