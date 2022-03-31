@@ -44,9 +44,9 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
         let event = FlutterEventChannel(name: "plugins.muka.com/amap_location_event", binaryMessenger: messenger)
         event.setStreamHandler(self)
     }
-
+    
     func onMethodCall(methodCall: FlutterMethodCall, result: @escaping FlutterResult) {
-        switch methodCall.method {	
+        switch methodCall.method {
         case "fetch":
             let args = methodCall.arguments as? [String: Any]
             var accuracy = args?["accuracy"] as? Int
@@ -55,16 +55,16 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
             }
             // 定位精度
             switch accuracy {
-                case 1:
-                    fetchLocationManager.desiredAccuracy = kCLLocationAccuracyKilometer
-                case 2:
-                    fetchLocationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-                case 3:
-                    fetchLocationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-                case 4:
-                    fetchLocationManager.desiredAccuracy = kCLLocationAccuracyBest
-                default:
-                    fetchLocationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+            case 1:
+                fetchLocationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+            case 2:
+                fetchLocationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+            case 3:
+                fetchLocationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            case 4:
+                fetchLocationManager.desiredAccuracy = kCLLocationAccuracyBest
+            default:
+                fetchLocationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
             }
             
             fetchLocationManager.requestLocation(withReGeocode: true) { (location: CLLocation!,reGeocode: AMapLocationReGeocode!, error: Error!) in
@@ -84,6 +84,20 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
                     result(dataMap)
                 }
             }
+        case "updatePrivacyShow" :
+            if let args = methodCall.arguments as? [String: Any] {
+                let hasContains = args["hasContains"] as? Bool == true ? AMapPrivacyInfoStatus.didContain : AMapPrivacyInfoStatus.notContain
+                let hasShow = args["hasShow"] as? Bool == true ? AMapPrivacyShowStatus.didShow : AMapPrivacyShowStatus.notShow
+                AMapLocationManager.updatePrivacyShow(hasShow, privacyInfo: hasContains)
+            }
+            result(nil)
+            
+        case "updatePrivacyAgree":
+            if let args = methodCall.arguments as? [String: Any] {
+                let hasAgree = args["hasAgree"] as? Bool == true ? AMapPrivacyAgreeStatus.didAgree : AMapPrivacyAgreeStatus.notAgree
+                AMapLocationManager.updatePrivacyAgree(hasAgree)
+            }
+            result(nil)
         case "start":
             if let args = methodCall.arguments as? [String: Any] {
                 interval = args["time"] as? Int ?? 2000
@@ -93,16 +107,16 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
                 }
                 // 定位精度
                 switch accuracy {
-                    case 1:
-                        locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
-                    case 2:
-                        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-                    case 3:
-                        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-                    case 4:
-                        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-                    default:
-                        locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+                case 1:
+                    locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+                case 2:
+                    locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+                case 3:
+                    locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+                case 4:
+                    locationManager.desiredAccuracy = kCLLocationAccuracyBest
+                default:
+                    locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
                 }
                 timer?.invalidate()
                 start = true
@@ -172,7 +186,7 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
                 self.eventSink?(dataMap)
                 self.start = false
             }
-           
+            
         }
     }
     
