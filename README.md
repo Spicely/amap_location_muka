@@ -52,6 +52,11 @@ Flutter高德定位插件
 #### AmapLocation
 
 ```
+    /// 隐私
+    AmapLocation.updatePrivacyShow(true, true);
+    AmapLocation.updatePrivacyAgree(true);
+
+    
     /// 持续定位 [注意全局只能有一个持续监听]
     stopLocation = await AmapLocation.start(
         listen: (Location location) {
