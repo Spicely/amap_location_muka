@@ -39,6 +39,14 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationAlwaysUsageDescription</key>
+    <string>App需要您的同意,才能访问位置</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>App需要您的同意,才能访问位置</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>App需要您的同意,才能访问位置</string>
+	<key>amap_key</key>
+    <string>239aa734a203e8ee6d7740edf762afe0</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>
