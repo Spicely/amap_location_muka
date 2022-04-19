@@ -4,9 +4,9 @@ packages:
   amap_core:
     dependency: transitive
     description:
-      name: amap_core
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "../../amap_view"
+      relative: true
+    source: path
     version: "1.0.2"
   amap_location_muka:
     dependency: "direct main"
