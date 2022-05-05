@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
   # amap_core: ^1.0.2
   amap_core:
-    path: ../amap_view
+    path: ../amap_core
 
 dev_dependencies:
   flutter_test:
