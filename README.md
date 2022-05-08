@@ -8,13 +8,6 @@ Flutter高德定位插件
     amap_location_muka: ^0.1.1
 ```
 
-## Android
-
-在`AndroidManifest.xml`添加如下代码
-`
- <meta-data android:name="com.amap.api.v2.apikey" android:value="你的key" />
-`
-
 ## IOS
 
 在`Info.plist`添加如下代码
@@ -25,8 +18,6 @@ Flutter高德定位插件
     <string>App需要您的同意,才能访问位置</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>App需要您的同意,才能访问位置</string>
-    <key>amap_key</key>
-    <string>你的key</string>
 
     // 导航 后台持续定位只需要location
     <key>UIBackgroundModes</key> 
@@ -52,6 +43,9 @@ Flutter高德定位插件
 #### AmapLocation
 
 ```
+    /// 设置key
+    AmapLocation.setApiKey("androidKey", "iosKey");
+
     /// 隐私
     AmapLocation.updatePrivacyShow(true, true);
     AmapLocation.updatePrivacyAgree(true);

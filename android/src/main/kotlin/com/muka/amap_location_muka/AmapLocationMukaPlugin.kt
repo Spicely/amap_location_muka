@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
+import android.text.TextUtils
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -97,6 +98,9 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
                     locationClient.stopLocation()
                 }
                 locationClient.startLocation()
+            }
+              "setApiKey" -> {
+                setApiKey(call.arguments as Map<*, *>)
             }
             "updatePrivacyShow" -> {
                 var hasContains: Boolean = call.argument("hasContains")!!
@@ -241,6 +245,20 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
                 javaClass.canonicalName
             )
             wakeLock?.acquire()
+        }
+    }
+
+    /**
+     * 设置apikey
+     *
+     * @param apiKeyMap
+     */
+    private fun setApiKey(apiKeyMap: Map<*, *>?) {
+        if (null != apiKeyMap) {
+            if (apiKeyMap.containsKey("android")
+                    && !TextUtils.isEmpty(apiKeyMap["android"] as String?)) {
+                AMapLocationClient.setApiKey(apiKeyMap["android"] as String?)
+            }
         }
     }
 

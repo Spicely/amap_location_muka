@@ -78,6 +78,16 @@ class AmapLocation {
     }
   }
 
+  /// 设置Android和iOS的apikey，建议在weigdet初始化时设置<br>
+  /// apiKey的申请请参考高德开放平台官网<br>
+  /// Android端: https://lbs.amap.com/api/android-location-sdk/guide/create-project/get-key<br>
+  /// iOS端: https://lbs.amap.com/api/ios-location-sdk/guide/create-project/get-key<br>
+  /// [androidKey] Android平台的key<br>
+  /// [iosKey] ios平台的key<br>
+  static void setApiKey(String androidKey, String iosKey) {
+    _channel.invokeMethod('setApiKey', {'android': androidKey, 'ios': iosKey});
+  }
+
   /// 单次定位
   ///
   /// androidMode 定位方式 [ 仅适用android ]
