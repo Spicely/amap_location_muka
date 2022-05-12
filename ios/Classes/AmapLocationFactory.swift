@@ -47,6 +47,15 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
     
     func onMethodCall(methodCall: FlutterMethodCall, result: @escaping FlutterResult) {
         switch methodCall.method {
+        case "setApiKey":
+            let args = methodCall.arguments as? [String: Any]
+            let apiKey = args?["ios"] as? String
+            if apiKey != nil {
+                AMapServices.shared().apiKey = apiKey
+                result(true)
+            } else {
+                result(false)
+            }
         case "fetch":
             let args = methodCall.arguments as? [String: Any]
             var accuracy = args?["accuracy"] as? Int
