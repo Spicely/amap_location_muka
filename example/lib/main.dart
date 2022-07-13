@@ -24,8 +24,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    AmapLocation.updatePrivacyShow(true, true);
-    AmapLocation.updatePrivacyAgree(true);
+    AMapLocation.updatePrivacyShow(true, true);
+    AMapLocation.updatePrivacyAgree(true);
     Future.delayed(Duration(milliseconds: 100), () {
       initPlatformState();
     });
@@ -38,11 +38,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.resumed: // 应用程序可见，前台
         print('22111112122');
-        await AmapLocation.disableBackground();
+        await AMapLocation.disableBackground();
         break;
       case AppLifecycleState.paused: // 应用程序不可见，后台
         print('22222222');
-        await AmapLocation.enableBackground(assetName: 'app_icon', label: '正在获取位置信息', title: '高德地图', vibrate: false);
+        await AMapLocation.enableBackground(assetName: 'app_icon', label: '正在获取位置信息', title: '高德地图', vibrate: false);
         break;
       default:
         break;
@@ -55,7 +55,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       await [Permission.locationAlways, Permission.locationWhenInUse, Permission.location].request();
     }
     print('单次定位');
-    _location = await AmapLocation.fetch();
+    _location = await AMapLocation.fetch();
     print(_location.toJson());
     print('单次定位');
     setState(() {});
@@ -85,7 +85,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             RaisedButton(
               child: Text('单次定位'),
               onPressed: () async {
-                _location = await AmapLocation.fetch();
+                _location = await AMapLocation.fetch();
                 print(_location.toJson());
                 print('单次定位');
                 setState(() {});
@@ -95,7 +95,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               child: Text('持续定位'),
               onPressed: () async {
                 print('持续定位');
-                stopLocation = await AmapLocation.start(
+                stopLocation = await AMapLocation.start(
                   time: 1000,
                   listen: (Location location) {
                     print(location.toJson());

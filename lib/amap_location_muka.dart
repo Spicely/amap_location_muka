@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 export 'package:amap_core/amap_core.dart';
 
 /// 仅Android可用
-enum AmapLocationMode {
+enum AMapLocationMode {
   /// 高精度模式
   HIGHT_ACCURACY,
 
@@ -19,7 +19,7 @@ enum AmapLocationMode {
   DEVICE_SENSORS,
 }
 
-enum AmapGeoFenceActivateAction {
+enum AMapGeoFenceActivateAction {
   /// 进入地理围栏
   GEOFENCE_IN,
 
@@ -31,7 +31,7 @@ enum AmapGeoFenceActivateAction {
 }
 
 /// 仅IOS可用
-enum AmapLocationAccuracy {
+enum AMapLocationAccuracy {
   /// 最快 精确度最底 约秒到
   THREE_KILOMETERS,
 
@@ -59,9 +59,9 @@ enum ConvertType {
   GOOGLE,
 }
 
-typedef void AmapLocationListen(Location location);
+typedef void AMapLocationListen(Location location);
 
-class AmapLocation {
+class AMapLocation {
   static const _channel = MethodChannel('plugins.muka.com/amap_location');
 
   static const _event = EventChannel('plugins.muka.com/amap_location_event');
@@ -94,8 +94,8 @@ class AmapLocation {
   ///
   /// iosAccuracy 精确度 [ 仅适用ios ]
   static Future<Location> fetch({
-    AmapLocationMode androidMode = AmapLocationMode.HIGHT_ACCURACY,
-    AmapLocationAccuracy iosAccuracy = AmapLocationAccuracy.THREE_KILOMETERS,
+    AMapLocationMode androidMode = AMapLocationMode.HIGHT_ACCURACY,
+    AMapLocationAccuracy iosAccuracy = AMapLocationAccuracy.THREE_KILOMETERS,
   }) async {
     dynamic location = await _channel.invokeMethod('fetch', {
       'mode': androidMode.index,
@@ -112,10 +112,10 @@ class AmapLocation {
   ///
   /// [accuracy] 精确度 [ 仅适用ios ]
   static Future<Future<Null> Function()> start({
-    AmapLocationListen? listen,
-    AmapLocationMode mode = AmapLocationMode.HIGHT_ACCURACY,
+    AMapLocationListen? listen,
+    AMapLocationMode mode = AMapLocationMode.HIGHT_ACCURACY,
     int? time,
-    AmapLocationAccuracy accuracy = AmapLocationAccuracy.THREE_KILOMETERS,
+    AMapLocationAccuracy accuracy = AMapLocationAccuracy.THREE_KILOMETERS,
   }) async {
     await _channel.invokeMethod('start', {
       'mode': mode.index,

@@ -102,7 +102,7 @@ class AmapLocationMukaWeb {
         aMap.addControl(geolocation);
         geolocation.getCurrentPosition(allowInterop((status, result) {
           if (status == 'complete') {
-            AmapLocation.customStreamController.add(Location(
+            AMapLocation.customStreamController.add(Location(
               latitude: result.position.lat,
               longitude: result.position.lng,
               country: result.addressComponent.country,
@@ -114,7 +114,7 @@ class AmapLocationMukaWeb {
               accuracy: 0.0,
             ).toJson());
           } else {
-            AmapLocation.customStreamController.add(result.message);
+            AMapLocation.customStreamController.add(result.message);
           }
         }));
       }));

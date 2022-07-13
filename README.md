@@ -40,19 +40,19 @@ Flutter高德定位插件
  - [ ] 地理围栏
 
 
-#### AmapLocation
+#### AMapLocation
 
 ```
     /// 设置key
-    AmapLocation.setApiKey("androidKey", "iosKey");
+    AMapLocation.setApiKey("androidKey", "iosKey");
 
     /// 隐私
-    AmapLocation.updatePrivacyShow(true, true);
-    AmapLocation.updatePrivacyAgree(true);
+    AMapLocation.updatePrivacyShow(true, true);
+    AMapLocation.updatePrivacyAgree(true);
 
     
     /// 持续定位 [注意全局只能有一个持续监听]
-    stopLocation = await AmapLocation.start(
+    stopLocation = await AMapLocation.start(
         listen: (Location location) {
             print(location.toJson());
         },
@@ -62,7 +62,7 @@ Flutter高德定位插件
     stopLocation();
 
     /// 单次定位
-    Location location = await AmapLocation.fetch();
+    Location location = await AMapLocation.fetch();
     print(location.toJson());
 
     /// vibrate 属性只支持一次性设置 设置后除非卸载app否则不会变更
@@ -81,10 +81,10 @@ Flutter高德定位插件
             case AppLifecycleState.inactive: // 处于这种状态的应用程序应该假设它们可能在任何时候暂停。
                 break;
             case AppLifecycleState.resumed: // 应用程序可见，前台
-                await AmapLocation.disableBackground();
+                await AMapLocation.disableBackground();
                 break;
             case AppLifecycleState.paused: // 应用程序不可见，后台
-                await AmapLocation.enableBackground(assetName: 'app_icon', label: '正在获取位置信息', title: '高德地图',vibrate: false);
+                await AMapLocation.enableBackground(assetName: 'app_icon', label: '正在获取位置信息', title: '高德地图',vibrate: false);
                 break;
             default:
                 break;
