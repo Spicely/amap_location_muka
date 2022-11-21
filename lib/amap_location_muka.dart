@@ -84,8 +84,9 @@ class AMapLocation {
   /// iOS端: https://lbs.amap.com/api/ios-location-sdk/guide/create-project/get-key<br>
   /// [androidKey] Android平台的key<br>
   /// [iosKey] ios平台的key<br>
-  static void setApiKey(String androidKey, String iosKey) {
-    _channel.invokeMethod('setApiKey', {'android': androidKey, 'ios': iosKey});
+  static Future<bool> setApiKey(String androidKey, String iosKey) async {
+    bool? status = await _channel.invokeMethod<bool>('setApiKey', {'android': androidKey, 'ios': iosKey});
+    return status ?? false;
   }
 
   /// 单次定位

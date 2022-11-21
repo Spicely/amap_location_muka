@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:amap_location_muka/amap_location_muka.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AMapLocation.setApiKey('', '239aa734a203e8ee6d7740edf762afe0');
   runApp(MyApp());
 }
 
@@ -73,7 +73,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             Center(
               child: Text('Running on: ${_location?.address}'),
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('停止定位'),
               onPressed: () async {
                 if (stopLocation != null) {
@@ -82,7 +82,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 }
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('单次定位'),
               onPressed: () async {
                 _location = await AMapLocation.fetch();
@@ -91,7 +91,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 setState(() {});
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('持续定位'),
               onPressed: () async {
                 print('持续定位');

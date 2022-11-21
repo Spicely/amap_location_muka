@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'amap_location_muka'
-  s.version          = '0.0.1'
+  s.version          = '0.1.7'
   s.summary          = 'Flutter高德定位插件'
   s.description      = <<-DESC
 Flutter高德定位插件

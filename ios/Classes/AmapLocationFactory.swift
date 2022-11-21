@@ -12,8 +12,8 @@ import AMapLocationKit
 
 class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamHandler {
     private var messenger: FlutterBinaryMessenger
-    private var locationManager: AMapLocationManager
-    private var fetchLocationManager: AMapLocationManager
+    private var locationManager: AMapLocationManager?
+    private var fetchLocationManager: AMapLocationManager?
     private var eventSink: FlutterEventSink?
     private var timer: Timer?
     private var interval: Int = 2000
@@ -22,19 +22,9 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
     private var fetchLoca: Dictionary<String, Any>?
     private var fetchSink: FlutterResult?
     
-    init(withMessenger messenger: FlutterBinaryMessenger) {
-        self.messenger = messenger
-        locationManager = AMapLocationManager()
-        fetchLocationManager = AMapLocationManager()
+    init(withMessenger msg: FlutterBinaryMessenger) {
+        messenger = msg
         super.init()
-        
-        locationManager.distanceFilter = 200
-        locationManager.delegate = self
-        locationManager.locatingWithReGeocode = true
-        
-        fetchLocationManager.distanceFilter = 200
-        fetchLocationManager.delegate = self
-        fetchLocationManager.locatingWithReGeocode = true
     }
     
     func register() {
@@ -52,6 +42,16 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
             let apiKey = args?["ios"] as? String
             if apiKey != nil {
                 AMapServices.shared().apiKey = apiKey
+                locationManager = AMapLocationManager()
+                fetchLocationManager = AMapLocationManager()
+                
+                locationManager?.distanceFilter = 200
+                locationManager?.delegate = self
+                locationManager?.locatingWithReGeocode = true
+                
+                fetchLocationManager?.distanceFilter = 200
+                fetchLocationManager?.delegate = self
+                fetchLocationManager?.locatingWithReGeocode = true
                 result(true)
             } else {
                 result(false)
@@ -65,18 +65,18 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
             // 定位精度
             switch accuracy {
             case 1:
-                fetchLocationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+                fetchLocationManager?.desiredAccuracy = kCLLocationAccuracyKilometer
             case 2:
-                fetchLocationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+                fetchLocationManager?.desiredAccuracy = kCLLocationAccuracyHundredMeters
             case 3:
-                fetchLocationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+                fetchLocationManager?.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             case 4:
-                fetchLocationManager.desiredAccuracy = kCLLocationAccuracyBest
+                fetchLocationManager?.desiredAccuracy = kCLLocationAccuracyBest
             default:
-                fetchLocationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+                fetchLocationManager?.desiredAccuracy = kCLLocationAccuracyThreeKilometers
             }
             
-            fetchLocationManager.requestLocation(withReGeocode: true) { (location: CLLocation!,reGeocode: AMapLocationReGeocode!, error: Error!) in
+            fetchLocationManager?.requestLocation(withReGeocode: true) { (location: CLLocation!,reGeocode: AMapLocationReGeocode!, error: Error!) in
                 if (error != nil) {
                     return result(nil)
                 }
@@ -117,45 +117,45 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
                 // 定位精度
                 switch accuracy {
                 case 1:
-                    locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+                    locationManager?.desiredAccuracy = kCLLocationAccuracyKilometer
                 case 2:
-                    locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+                    locationManager?.desiredAccuracy = kCLLocationAccuracyHundredMeters
                 case 3:
-                    locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+                    locationManager?.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
                 case 4:
-                    locationManager.desiredAccuracy = kCLLocationAccuracyBest
+                    locationManager?.desiredAccuracy = kCLLocationAccuracyBest
                 default:
-                    locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+                    locationManager?.desiredAccuracy = kCLLocationAccuracyThreeKilometers
                 }
                 timer?.invalidate()
                 start = true
                 timer =  Timer.scheduledTimer(timeInterval:TimeInterval(interval / 1000), target: self, selector: #selector(sinkLocation(_:)), userInfo: nil, repeats: true)
-                locationManager.stopUpdatingLocation()
-                locationManager.startUpdatingLocation()
+                locationManager?.stopUpdatingLocation()
+                locationManager?.startUpdatingLocation()
             }
             result(nil)
         case "stop":
-            locationManager.stopUpdatingLocation()
+            locationManager?.stopUpdatingLocation()
             timer?.invalidate()
             result(nil)
         case "enableBackground":
-            locationManager.stopUpdatingLocation()
-            locationManager.pausesLocationUpdatesAutomatically = false
+            locationManager?.stopUpdatingLocation()
+            locationManager?.pausesLocationUpdatesAutomatically = false
             if UIDevice.current.systemVersion._bridgeToObjectiveC().doubleValue >= 9.0 {
-                locationManager.allowsBackgroundLocationUpdates = true
+                locationManager?.allowsBackgroundLocationUpdates = true
             }
             timer?.invalidate()
             start = true
             timer = Timer.scheduledTimer(timeInterval: TimeInterval(interval / 1000), target: self, selector: #selector(sinkLocation(_:)), userInfo: nil, repeats: true)
-            locationManager.startUpdatingLocation()
+            locationManager?.startUpdatingLocation()
             result(nil)
         case "disableBackground":
-            locationManager.stopUpdatingLocation()
-            locationManager.allowsBackgroundLocationUpdates = false
+            locationManager?.stopUpdatingLocation()
+            locationManager?.allowsBackgroundLocationUpdates = false
             timer?.invalidate()
             start = true
             timer = Timer.scheduledTimer(timeInterval: TimeInterval(interval / 1000), target: self, selector: #selector(sinkLocation(_:)), userInfo: nil, repeats: true)
-            locationManager.startUpdatingLocation()
+            locationManager?.startUpdatingLocation()
             result(nil)
         default:
             result(FlutterMethodNotImplemented)
