@@ -7,7 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await AMapLocation.setApiKey('', '239aa734a203e8ee6d7740edf762afe0');
+  await AMapLocation.setApiKey('d725d072f587a82f8a78a6aeb5d005b7', '39a49aebcca9284aaca2e639e651ba45');
   runApp(MyApp());
 }
 

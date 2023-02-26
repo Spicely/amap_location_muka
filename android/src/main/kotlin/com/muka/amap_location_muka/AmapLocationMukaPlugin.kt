@@ -101,6 +101,7 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
             }
               "setApiKey" -> {
                 setApiKey(call.arguments as Map<*, *>)
+                result.success(null)
             }
             "updatePrivacyShow" -> {
                 var hasContains: Boolean = call.argument("hasContains")!!
