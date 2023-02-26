@@ -4,9 +4,10 @@ packages:
   amap_core:
     dependency: transitive
     description:
-      path: "../../amap_core"
-      relative: true
-    source: path
+      name: amap_core
+      sha256: "8defded98ff4afa1983f359b1d8979c1f5cfebc8de9f02d188d5556db4716273"
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.3"
   amap_location_muka:
     dependency: "direct main"
