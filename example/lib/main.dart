@@ -24,9 +24,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    AMapLocation.updatePrivacyShow(true, true);
-    AMapLocation.updatePrivacyAgree(true);
-    Future.delayed(Duration(milliseconds: 100), () {
+
+    Future.delayed(Duration(milliseconds: 100), () async {
+      await AMapLocation.updatePrivacyShow(true, true);
+      await AMapLocation.updatePrivacyAgree(true);
       initPlatformState();
     });
   }

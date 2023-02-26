@@ -1,5 +1,5 @@
 PODS:
-  - amap_location_muka (0.0.1):
+  - amap_location_muka (0.1.7):
     - AMapLocation
     - Flutter
   - AMapFoundation (1.6.9)
@@ -28,7 +28,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler/ios"
 
 SPEC CHECKSUMS:
-  amap_location_muka: f33b431c50a8d849dec9388b83b0e9585e67726f
+  amap_location_muka: ba3869980672308d03afa0f4d108cc582901490c
   AMapFoundation: 8d8ecbb0b2e9ce5487995360d26c885d94642bfd
   AMapLocation: 5ef44a1117be7dc541cb7a7d43d03c5ee91e4387
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
