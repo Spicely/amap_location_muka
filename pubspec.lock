@@ -4,10 +4,11 @@ packages:
   amap_core:
     dependency: "direct main"
     description:
-      path: "../amap_core"
-      relative: true
-    source: path
-    version: "1.0.3"
+      name: amap_core
+      sha256: a2a91ac2251551b0a7952ff5fa6eadefaa94a4465c32000a050bd2a313f21bc4
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   async:
     dependency: transitive
     description:

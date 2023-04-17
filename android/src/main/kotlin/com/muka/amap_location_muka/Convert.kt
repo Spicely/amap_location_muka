@@ -20,6 +20,8 @@ class Convert {
             data["street"] = location.street
             data["address"] = location.address
             data["province"] = location.province
+            data["cityCode"] = location.cityCode
+            data["adCode"] = location.adCode
             return data
         }
     }

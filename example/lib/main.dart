@@ -7,6 +7,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AMapLocation.updatePrivacyShow(true, true);
+  await AMapLocation.updatePrivacyAgree(true);
   await AMapLocation.setApiKey('d725d072f587a82f8a78a6aeb5d005b7', '39a49aebcca9284aaca2e639e651ba45');
   runApp(MyApp());
 }
@@ -26,8 +28,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     Future.delayed(Duration(milliseconds: 100), () async {
-      await AMapLocation.updatePrivacyShow(true, true);
-      await AMapLocation.updatePrivacyAgree(true);
       initPlatformState();
     });
   }
@@ -39,11 +39,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.resumed: // 应用程序可见，前台
         print('22111112122');
-        await AMapLocation.disableBackground();
+        // await AMapLocation.disableBackground();
         break;
       case AppLifecycleState.paused: // 应用程序不可见，后台
         print('22222222');
-        await AMapLocation.enableBackground(assetName: 'app_icon', label: '正在获取位置信息', title: '高德地图', vibrate: false);
+        // await AMapLocation.enableBackground(assetName: 'app_icon', label: '正在获取位置信息', title: '高德地图', vibrate: false);
         break;
       default:
         break;
@@ -58,6 +58,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     print('单次定位');
     _location = await AMapLocation.fetch();
     print(_location.toJson());
+    print(_location.latLng);
     print('单次定位');
     setState(() {});
   }

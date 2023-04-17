@@ -1,6 +1,7 @@
 library amap_location_muka;
 
 import 'dart:async';
+
 import 'package:amap_core/amap_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -78,7 +79,7 @@ class AMapLocation {
     }
   }
 
-  /// 设置Android和iOS的apikey，建议在weigdet初始化时设置<br>
+  /// 设置Android和iOS的apiKey，建议在Widget初始化时设置<br>
   /// apiKey的申请请参考高德开放平台官网<br>
   /// Android端: https://lbs.amap.com/api/android-location-sdk/guide/create-project/get-key<br>
   /// iOS端: https://lbs.amap.com/api/ios-location-sdk/guide/create-project/get-key<br>

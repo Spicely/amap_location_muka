@@ -1,11 +1,6 @@
 import 'dart:async';
 import 'dart:js';
-// In order to *not* need this ignore, consider extracting the "web" version
-// of your plugin as a separate package, instead of inlining it in the same
-// package as the core of your plugin.
-// ignore: avoid_web_libraries_in_flutter
 
-import 'package:amap_core/amap_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
@@ -70,8 +65,7 @@ class AmapLocationMukaWeb {
       geolocation.getCurrentPosition(allowInterop((status, result) {
         if (status == 'complete') {
           completer.complete(Location(
-            latitude: result.position.lat,
-            longitude: result.position.lng,
+            latLng: LatLng(result.position.lat, result.position.lng),
             country: result.addressComponent.country,
             province: result.addressComponent.province,
             city: result.addressComponent.city,
@@ -103,8 +97,7 @@ class AmapLocationMukaWeb {
         geolocation.getCurrentPosition(allowInterop((status, result) {
           if (status == 'complete') {
             AMapLocation.customStreamController.add(Location(
-              latitude: result.position.lat,
-              longitude: result.position.lng,
+              latLng: LatLng(result.position.lat, result.position.lng),
               country: result.addressComponent.country,
               province: result.addressComponent.province,
               city: result.addressComponent.city,
