@@ -2,17 +2,17 @@ PODS:
   - amap_location_muka (0.1.7):
     - AMapLocation
     - Flutter
-  - AMapFoundation (1.6.9)
-  - AMapLocation (2.8.0):
-    - AMapFoundation (~> 1.6.9)
+  - AMapFoundation (1.8.2)
+  - AMapLocation (2.10.0):
+    - AMapFoundation (>= 1.8.0)
   - Flutter (1.0.0)
-  - "permission_handler (5.1.0+2)":
+  - permission_handler_apple (9.1.1):
     - Flutter
 
 DEPENDENCIES:
   - amap_location_muka (from `.symlinks/plugins/amap_location_muka/ios`)
   - Flutter (from `Flutter`)
-  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
 
 SPEC REPOS:
   trunk:
@@ -24,16 +24,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/amap_location_muka/ios"
   Flutter:
     :path: Flutter
-  permission_handler:
-    :path: ".symlinks/plugins/permission_handler/ios"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
   amap_location_muka: ba3869980672308d03afa0f4d108cc582901490c
-  AMapFoundation: 8d8ecbb0b2e9ce5487995360d26c885d94642bfd
-  AMapLocation: 5ef44a1117be7dc541cb7a7d43d03c5ee91e4387
+  AMapFoundation: 9885c48fc3a78fdfb84a0299a2293e56ea3c9fec
+  AMapLocation: 5248aec2455ebb5d104b367813c946430a2ee033
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
+  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
 
-PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
+PODFILE CHECKSUM: 70d9d25280d0dd177a5f637cdb0f0b0b12c6a189
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.13.0

@@ -1,4 +1,4 @@
-package com.muka.amap_location_muka_example
+package com.example.example
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,7 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.muka.amap_location_muka_example">
-   <application
-        android:label="amap_location_muka_example"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application
+        android:label="example"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -30,5 +29,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="d725d072f587a82f8a78a6aeb5d005b7"/>
     </application>
 </manifest>

@@ -23,13 +23,11 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry
 import kotlin.random.Random
 
-
 /** AmapLocationMukaPlugin */
-class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
-    EventChannel.StreamHandler {
+class AmapLocationMukaPlugin :
+        Service(), FlutterPlugin, MethodCallHandler, EventChannel.StreamHandler {
     private lateinit var channel: MethodChannel
     private lateinit var eventChannel: EventChannel
     private lateinit var pluginBinding: FlutterPlugin.FlutterPluginBinding
@@ -42,32 +40,22 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
     private var wakeLock: PowerManager.WakeLock? = null
     private lateinit var mGeoFenceClient: GeoFenceClient
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onAttachedToEngine(
+            @NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding
+    ) {
         pluginBinding = flutterPluginBinding
         channel =
-            MethodChannel(flutterPluginBinding.binaryMessenger, "plugins.muka.com/amap_location")
-        channel.setMethodCallHandler(this);
-        eventChannel = EventChannel(
-            flutterPluginBinding.binaryMessenger,
-            "plugins.muka.com/amap_location_event"
-        )
-        eventChannel.setStreamHandler(this);
-        watchClient = AMapLocationClient(flutterPluginBinding.applicationContext)
-        mGeoFenceClient = GeoFenceClient(pluginBinding.applicationContext)
-
-        watchClient.setLocationListener {
-            if (it != null) {
-                if (it.errorCode == 0) {
-                    eventSink?.success(Convert.toJson(it))
-                } else {
-                    eventSink?.error(
-                        "AmapError",
-                        "onLocationChanged Error: ${it.errorInfo}",
-                        it.errorInfo
-                    )
-                }
-            }
-        }
+                MethodChannel(
+                        flutterPluginBinding.binaryMessenger,
+                        "plugins.muka.com/amap_location"
+                )
+        eventChannel =
+                EventChannel(
+                        flutterPluginBinding.binaryMessenger,
+                        "plugins.muka.com/amap_location_event"
+                )
+        channel.setMethodCallHandler(this)
+        eventChannel.setStreamHandler(this)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -77,11 +65,12 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
                 var mode: Any? = call.argument("mode")
                 var locationClient = AMapLocationClient(pluginBinding.applicationContext)
                 var locationOption = AMapLocationClientOption()
-                locationOption.locationMode = when (mode) {
-                    1 -> AMapLocationClientOption.AMapLocationMode.Battery_Saving
-                    2 -> AMapLocationClientOption.AMapLocationMode.Device_Sensors
-                    else -> AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
-                }
+                locationOption.locationMode =
+                        when (mode) {
+                            1 -> AMapLocationClientOption.AMapLocationMode.Battery_Saving
+                            2 -> AMapLocationClientOption.AMapLocationMode.Device_Sensors
+                            else -> AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
+                        }
                 locationClient.setLocationOption(locationOption)
                 locationClient.setLocationListener {
                     if (it != null) {
@@ -89,9 +78,9 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
                             result.success(Convert.toJson(it))
                         } else {
                             result.error(
-                                "AmapError",
-                                "onLocationChanged Error: ${it.errorInfo}",
-                                it.errorInfo
+                                    "AmapError",
+                                    "onLocationChanged Error: ${it.errorInfo}",
+                                    it.errorInfo
                             )
                         }
                     }
@@ -99,31 +88,51 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
                 }
                 locationClient.startLocation()
             }
-              "setApiKey" -> {
+            "setApiKey" -> {
                 setApiKey(call.arguments as Map<*, *>)
+                watchClient = AMapLocationClient(pluginBinding.applicationContext)
+                watchClient.setLocationListener {
+                    if (it != null) {
+                        if (it.errorCode == 0) {
+                            eventSink?.success(Convert.toJson(it))
+                        } else {
+                            eventSink?.error(
+                                    "AmapError",
+                                    "onLocationChanged Error: ${it.errorInfo}",
+                                    it.errorInfo
+                            )
+                        }
+                    }
+                }
+                mGeoFenceClient = GeoFenceClient(pluginBinding.applicationContext)
                 result.success(null)
             }
             "updatePrivacyShow" -> {
                 var hasContains: Boolean = call.argument("hasContains")!!
                 var hasShow: Boolean = call.argument("hasShow")!!
-                AMapLocationClient.updatePrivacyShow(pluginBinding.applicationContext,hasContains, hasShow)
-                result.success(null)
+                AMapLocationClient.updatePrivacyShow(
+                        pluginBinding.applicationContext,
+                        hasContains,
+                        hasShow
+                )
+                result.success(true)
             }
             "updatePrivacyAgree" -> {
                 var hasAgree: Boolean = call.argument("hasAgree")!!
-                AMapLocationClient.updatePrivacyAgree(pluginBinding.applicationContext,hasAgree)
-                result.success(null)
+                AMapLocationClient.updatePrivacyAgree(pluginBinding.applicationContext, hasAgree)
+                result.success(true)
             }
             "start" -> {
                 var mode: Any? = call.argument("mode")
                 var time: Int = call.argument<Int>("time") ?: 2000
                 var locationOption = AMapLocationClientOption()
-                locationOption.locationMode = when (mode) {
-                    1 -> AMapLocationClientOption.AMapLocationMode.Battery_Saving
-                    2 -> AMapLocationClientOption.AMapLocationMode.Device_Sensors
-                    else -> AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
-                }
-                locationOption.interval = time.toLong();
+                locationOption.locationMode =
+                        when (mode) {
+                            1 -> AMapLocationClientOption.AMapLocationMode.Battery_Saving
+                            2 -> AMapLocationClientOption.AMapLocationMode.Device_Sensors
+                            else -> AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
+                        }
+                locationOption.interval = time.toLong()
                 watchClient.setLocationOption(locationOption)
                 watchClient.startLocation()
                 result.success(null)
@@ -134,11 +143,13 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
             }
             "enableBackground" -> {
                 watchClient.enableBackgroundLocation(
-                    2001, buildNotification(
-                        call.argument("title")
-                            ?: "", call.argument("label") ?: "", call.argument("assetName")
-                            ?: "", call.argument<Boolean>("vibrate")!!
-                    )
+                        2001,
+                        buildNotification(
+                                call.argument("title") ?: "",
+                                call.argument("label") ?: "",
+                                call.argument("assetName") ?: "",
+                                call.argument<Boolean>("vibrate")!!
+                        )
                 )
                 result.success(null)
             }
@@ -147,7 +158,6 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
                 notificationManager?.deleteNotificationChannel(channelId)
                 result.success(null)
             }
-
             "addGeoFenceKeyword" -> {
                 /// 根据关键字创建围栏
                 var keyword = (call.argument("keyword") as String?)!!
@@ -167,12 +177,12 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
                 centerPoint.latitude = point["latitude"] as Double
                 centerPoint.longitude = point["longitude"] as Double
                 mGeoFenceClient.addGeoFence(
-                    keyword,
-                    poiType,
-                    centerPoint,
-                    aroundRadius,
-                    1,
-                    customId
+                        keyword,
+                        poiType,
+                        centerPoint,
+                        aroundRadius,
+                        1,
+                        customId
                 )
             }
             "addGeoFenceArea" -> {
@@ -193,7 +203,7 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
             }
             "addGeoFencePolygon" -> {
                 /// 创建自定义围栏
-                var points = (call.argument("points") as List<Map<String,Any>>?)!!
+                var points = (call.argument("points") as List<Map<String, Any>>?)!!
                 var customId = (call.argument("customId") as String?)!!
                 val pois: ArrayList<DPoint> = ArrayList<DPoint>()
                 points.forEach {
@@ -209,17 +219,7 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
-    }
-
-    companion object {
-        @JvmStatic
-        fun registerWith(registrar: PluginRegistry.Registrar) {
-            val channel = MethodChannel(registrar.messenger(), "plugins.muka.com/amap_location")
-            channel.setMethodCallHandler(AmapLocationMukaPlugin())
-            val eventChannel =
-                EventChannel(registrar.messenger(), "plugins.muka.com/amap_location_event")
-            eventChannel.setStreamHandler(AmapLocationMukaPlugin());
-        }
+        eventChannel.setStreamHandler(null)
     }
 
     @SuppressLint("WrongConstant")
@@ -229,10 +229,10 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
             msgId = intent.getIntExtra("msgId", -1)
         }
         flags = START_STICKY
-//        setAppBackgroundPlayer()
+        //        setAppBackgroundPlayer()
         acquireWakeLock()
         // 刷新定位
-        if (watchClient != null && watchClient.isStarted) {
+        if (watchClient.isStarted) {
             watchClient.startLocation()
         }
         return super.onStartCommand(intent, flags, startId)
@@ -241,10 +241,11 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
     private fun acquireWakeLock() {
         if (null == wakeLock) {
             val pm: PowerManager = getSystemService(POWER_SERVICE) as PowerManager
-            wakeLock = pm.newWakeLock(
-                PowerManager.PARTIAL_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE,
-                javaClass.canonicalName
-            )
+            wakeLock =
+                    pm.newWakeLock(
+                            PowerManager.PARTIAL_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE,
+                            javaClass.canonicalName
+                    )
             wakeLock?.acquire()
         }
     }
@@ -256,75 +257,82 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
      */
     private fun setApiKey(apiKeyMap: Map<*, *>?) {
         if (null != apiKeyMap) {
-            if (apiKeyMap.containsKey("android")
-                    && !TextUtils.isEmpty(apiKeyMap["android"] as String?)) {
+            if (apiKeyMap.containsKey("android") &&
+                            !TextUtils.isEmpty(apiKeyMap["android"] as String?)
+            ) {
                 AMapLocationClient.setApiKey(apiKeyMap["android"] as String?)
             }
         }
     }
 
     private fun buildNotification(
-        title: String,
-        label: String,
-        name: String,
-        vibrate: Boolean
+            title: String,
+            label: String,
+            name: String,
+            vibrate: Boolean
     ): Notification? {
         var builder: Notification.Builder? = null
         var notification: Notification? = null
         if (Build.VERSION.SDK_INT >= 26) {
             if (null == notificationManager) {
                 notificationManager =
-                    pluginBinding.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        pluginBinding.applicationContext.getSystemService(
+                                Context.NOTIFICATION_SERVICE
+                        ) as
+                                NotificationManager
             }
             if (!isCreateChannel) {
-                var notificationChannel = NotificationChannel(
-                    channelId,
-                    pluginBinding.applicationContext.packageName,
-                    NotificationManager.IMPORTANCE_HIGH
-                );
-                notificationChannel.enableLights(true) //是否在桌面icon右上角展示小圆点
-                notificationChannel.lightColor = Color.BLUE //小圆点颜色
-                notificationChannel.setShowBadge(true) //是否在久按桌面图标时显示此渠道的通知
+                var notificationChannel =
+                        NotificationChannel(
+                                channelId,
+                                pluginBinding.applicationContext.packageName,
+                                NotificationManager.IMPORTANCE_HIGH
+                        )
+                notificationChannel.enableLights(true) // 是否在桌面icon右上角展示小圆点
+                notificationChannel.lightColor = Color.BLUE // 小圆点颜色
+                notificationChannel.setShowBadge(true) // 是否在久按桌面图标时显示此渠道的通知
                 if (!vibrate) {
                     notificationChannel.enableVibration(false)
                     notificationChannel.vibrationPattern = null
                     notificationChannel.setSound(null, null)
                 }
-                notificationManager?.createNotificationChannel(notificationChannel);
+                notificationManager?.createNotificationChannel(notificationChannel)
             }
             builder = Notification.Builder(pluginBinding.applicationContext, channelId)
         } else {
             builder = Notification.Builder(pluginBinding.applicationContext)
         }
-        var intent = Intent(
-            pluginBinding.applicationContext,
-            getMainActivityClass(pluginBinding.applicationContext)
-        )
-        var pendingIntent = PendingIntent.getActivity(
-            pluginBinding.applicationContext,
-            Random.nextInt(100),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        builder
-            .setContentTitle(title).setContentText(label)
-            .setWhen(System.currentTimeMillis())
-            .setSmallIcon(getDrawableResourceId(name))
-            .setLargeIcon(
-                BitmapFactory.decodeResource(
-                    pluginBinding.applicationContext.resources,
-                    getDrawableResourceId(name)
+        var intent =
+                Intent(
+                        pluginBinding.applicationContext,
+                        getMainActivityClass(pluginBinding.applicationContext)
                 )
-            )
-            .setContentIntent(pendingIntent)
+        var pendingIntent =
+                PendingIntent.getActivity(
+                        pluginBinding.applicationContext,
+                        Random.nextInt(100),
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                )
+
+        builder.setContentTitle(title)
+                .setContentText(label)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(getDrawableResourceId(name))
+                .setLargeIcon(
+                        BitmapFactory.decodeResource(
+                                pluginBinding.applicationContext.resources,
+                                getDrawableResourceId(name)
+                        )
+                )
+                .setContentIntent(pendingIntent)
         if (!vibrate) {
             builder.setDefaults(NotificationCompat.FLAG_ONLY_ALERT_ONCE)
         }
         if (Build.VERSION.SDK_INT >= 16) {
-            notification = builder.build();
+            notification = builder.build()
         } else {
-            return builder.getNotification();
+            return builder.getNotification()
         }
         return notification
     }
@@ -343,20 +351,17 @@ class AmapLocationMukaPlugin : Service(), FlutterPlugin, MethodCallHandler,
 
     private fun getDrawableResourceId(name: String): Int {
         return pluginBinding.applicationContext.resources.getIdentifier(
-            name,
-            "drawable",
-            pluginBinding.applicationContext.packageName
+                name,
+                "drawable",
+                pluginBinding.applicationContext.packageName
         )
     }
-
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
         eventSink = events
     }
 
-    override fun onCancel(arguments: Any?) {
-
-    }
+    override fun onCancel(arguments: Any?) {}
 
     override fun onBind(intent: Intent?): IBinder? {
         TODO("Not yet implemented")

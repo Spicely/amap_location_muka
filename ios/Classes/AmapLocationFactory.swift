@@ -78,7 +78,8 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
             
             fetchLocationManager?.requestLocation(withReGeocode: true) { (location: CLLocation!,reGeocode: AMapLocationReGeocode!, error: Error!) in
                 if (error != nil) {
-                    return result(nil)
+                    print(error)
+                    return result(error.localizedDescription)
                 }
                 if (location != nil) {
                     var dataMap: Dictionary<String, Any> = ["speed": location.speed ,"altitude": location.altitude, "latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude, "accuracy": location.horizontalAccuracy]

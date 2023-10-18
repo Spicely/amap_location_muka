@@ -1,6 +1,6 @@
 # amap_location
 
-Flutter高德定位插件
+Flutter 高德定位插件
 
 ## 引入方式
 
@@ -20,44 +20,45 @@ Flutter高德定位插件
     <string>App需要您的同意,才能访问位置</string>
 
     // 导航 后台持续定位只需要location
-    <key>UIBackgroundModes</key> 
-    <array> 
+    <key>UIBackgroundModes</key>
+    <array>
         <string>location</string>
-        <string>audio</string> 
+        <string>audio</string>
     </array>
 ```
 
 ## Web
+
 ```
     /// 在html文件中加入
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=你的key"></script>
 ```
 
 ## 支持
- - [x] 单次获取位置信息
- - [x] 持续获取位置信息
- - [ ] 后台持续定位
- - [ ] 地理围栏
 
+- [x] 单次获取位置信息
+- [x] 持续获取位置信息
+- [ ] 后台持续定位
+- [ ] 地理围栏
 
 #### AMapLocation
 
 ```
-    /// 设置key
-    AMapLocation.setApiKey("androidKey", "iosKey");
 
-    /// 隐私
+    /// 隐私 必须先调用
     AMapLocation.updatePrivacyShow(true, true);
     AMapLocation.updatePrivacyAgree(true);
 
-    
+    /// 设置key
+    AMapLocation.setApiKey("androidKey", "iosKey");
+
     /// 持续定位 [注意全局只能有一个持续监听]
     stopLocation = await AMapLocation.start(
         listen: (Location location) {
             print(location.toJson());
         },
     );
-    
+
     /// 停止定位
     stopLocation();
 

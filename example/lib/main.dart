@@ -7,7 +7,6 @@ import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await AMapLocation.setApiKey('d725d072f587a82f8a78a6aeb5d005b7', '39a49aebcca9284aaca2e639e651ba45');
   runApp(MyApp());
 }
 
@@ -17,19 +16,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  Location _location;
-  Function stopLocation;
+  Location? _location;
+  Function? stopLocation;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
 
-    Future.delayed(Duration(milliseconds: 100), () async {
-      await AMapLocation.updatePrivacyShow(true, true);
-      await AMapLocation.updatePrivacyAgree(true);
-      initPlatformState();
-    });
+    initPlatformState();
   }
 
   @override
@@ -53,13 +47,28 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     if (!kIsWeb) {
-      await [Permission.locationAlways, Permission.locationWhenInUse, Permission.location].request();
+      await Permission.location.request();
     }
-    print('单次定位');
+    await AMapLocation.updatePrivacyShow(true, true);
+    await AMapLocation.updatePrivacyAgree(true);
+
+    await AMapLocation.setApiKey('d725d072f587a82f8a78a6aeb5d005b7', '239aa734a203e8ee6d7740edf762afe0');
+
+    // print(statuses[Permission.location]);
+    // print('单次定位');
     _location = await AMapLocation.fetch();
-    print(_location.toJson());
-    print('单次定位');
-    setState(() {});
+    print(_location?.toJson());
+    // print('单次定位');
+    // setState(() {});
+    stopLocation = await AMapLocation.start(
+      time: 1000,
+      listen: (Location location) {
+        print(location.toJson());
+        print('持续定位222');
+      },
+    );
+
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -78,7 +87,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               child: Text('停止定位'),
               onPressed: () async {
                 if (stopLocation != null) {
-                  await stopLocation();
+                  await stopLocation?.call();
                   print('停止定位');
                 }
               },
@@ -87,7 +96,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               child: Text('单次定位'),
               onPressed: () async {
                 _location = await AMapLocation.fetch();
-                print(_location.toJson());
+                print(_location?.toJson());
                 print('单次定位');
                 setState(() {});
               },
