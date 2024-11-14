@@ -1,6 +1,6 @@
-# example
+# amap_location_muka_example
 
-A new Flutter project.
+Demonstrates how to use the amap_location_muka plugin.
 
 ## Getting Started
 

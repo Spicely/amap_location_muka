@@ -1,11 +1,11 @@
 {
-    "name": "example",
-    "short_name": "example",
+    "name": "amap_location_muka_example",
+    "short_name": "amap_location_muka_example",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Demonstrates how to use the amap_location_muka plugin.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
