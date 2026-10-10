@@ -71,6 +71,7 @@ class AmapLocationMukaPlugin :
                             2 -> AMapLocationClientOption.AMapLocationMode.Device_Sensors
                             else -> AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
                         }
+                locationOption.isSensorEnable = true
                 locationClient.setLocationOption(locationOption)
                 locationClient.setLocationListener {
                     if (it != null) {
@@ -133,6 +134,7 @@ class AmapLocationMukaPlugin :
                             else -> AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
                         }
                 locationOption.interval = time.toLong()
+                locationOption.isSensorEnable = true
                 watchClient.setLocationOption(locationOption)
                 watchClient.startLocation()
                 result.success(null)

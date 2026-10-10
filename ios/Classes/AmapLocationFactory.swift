@@ -82,7 +82,7 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
                     return result(error.localizedDescription)
                 }
                 if (location != nil) {
-                    var dataMap: Dictionary<String, Any> = ["speed": location.speed ,"altitude": location.altitude, "latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude, "accuracy": location.horizontalAccuracy]
+                    var dataMap: Dictionary<String, Any> = ["speed": location.speed, "altitude": location.altitude, "latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude, "accuracy": location.horizontalAccuracy, "bearing": location.course >= 0 ? location.course : 0.0]
                     if (reGeocode != nil) {
                         dataMap["address"] = reGeocode.formattedAddress
                         dataMap["country"] = reGeocode.country
@@ -182,7 +182,7 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
     
     func amapLocationManager(_ manager: AMapLocationManager!, didUpdate location: CLLocation!, reGeocode: AMapLocationReGeocode!) {
         if (location != nil) {
-            var dataMap: Dictionary<String, Any> = ["speed": location.speed ,"altitude": location.altitude, "latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude, "accuracy": location.horizontalAccuracy]
+            var dataMap: Dictionary<String, Any> = ["speed": location.speed, "altitude": location.altitude, "latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude, "accuracy": location.horizontalAccuracy, "bearing": location.course >= 0 ? location.course : 0.0]
             if (reGeocode != nil) {
                 dataMap["address"] = reGeocode.formattedAddress
                 dataMap["country"] = reGeocode.country

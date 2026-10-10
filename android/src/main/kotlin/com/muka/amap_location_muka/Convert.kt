@@ -10,7 +10,9 @@ class Convert {
             data["latitude"] = location.latitude
             data["longitude"] = location.longitude
             data["accuracy"] = location.accuracy
+            data["altitude"] = location.altitude
             data["speed"] = location.speed
+            data["bearing"] = location.bearing
             data["time"] = location.time
             // 以下是定位sdk返回的逆地理信息
             data["coordType"] = location.coordType

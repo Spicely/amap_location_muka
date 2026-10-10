@@ -70,6 +70,11 @@ class AMapLocation {
 
   static StreamSubscription<dynamic>? _stream;
 
+  static final StreamController<Location> _locationBroadcastController = StreamController<Location>.broadcast();
+
+  /// 广播定位流，可供多处同时监听
+  static Stream<Location> get onLocationChanged => _locationBroadcastController.stream;
+
   static Stream<dynamic> get _eventStream {
     if (kIsWeb) {
       return customStreamController.stream;
@@ -95,13 +100,27 @@ class AMapLocation {
   /// iosAccuracy 精确度 [ 仅适用ios ]
   static Future<Location> fetch({
     AMapLocationMode androidMode = AMapLocationMode.HIGHT_ACCURACY,
-    AMapLocationAccuracy iosAccuracy = AMapLocationAccuracy.THREE_KILOMETERS,
+    AMapLocationAccuracy iosAccuracy = AMapLocationAccuracy.BEST,
   }) async {
     dynamic location = await _channel.invokeMethod('fetch', {
       'mode': androidMode.index,
       'accuracy': iosAccuracy.index,
     });
-    return Location.fromJson(location);
+    if (location is Map) {
+      return Location.fromJson(Map<dynamic, dynamic>.from(location));
+    }
+    return Location();
+  }
+
+  /// 停止持续定位
+  static Future<void> stop() async {
+    try {
+      await _channel.invokeMethod('stop');
+    } catch (e) {
+      debugPrint('AMapLocation stop error: $e');
+    }
+    await _stream?.cancel();
+    _stream = null;
   }
 
   /// 持续定位
@@ -111,24 +130,33 @@ class AMapLocation {
   /// [mode] 定位方式 [ 仅适用android ]
   ///
   /// [accuracy] 精确度 [ 仅适用ios ]
-  static Future<Future<Null> Function()> start({
+  static Future<Future<void> Function()> start({
     AMapLocationListen? listen,
     AMapLocationMode mode = AMapLocationMode.HIGHT_ACCURACY,
     int? time,
-    AMapLocationAccuracy accuracy = AMapLocationAccuracy.THREE_KILOMETERS,
+    AMapLocationAccuracy accuracy = AMapLocationAccuracy.BEST,
   }) async {
     await _channel.invokeMethod('start', {
       'mode': mode.index,
       'time': time ?? 2000,
       'accuracy': accuracy.index,
     });
-    if (_stream == null) {
-      _stream = _eventStream.listen((dynamic data) {
-        listen!(Location.fromJson(data));
-      });
-    }
+    await _stream?.cancel();
+    _stream = _eventStream.listen((dynamic data) {
+      try {
+        if (data is Map) {
+          final loc = Location.fromJson(Map<dynamic, dynamic>.from(data));
+          _locationBroadcastController.add(loc);
+          listen?.call(loc);
+        }
+      } catch (e) {
+        debugPrint('AMapLocation parse error: $e');
+      }
+    }, onError: (dynamic err) {
+      debugPrint('AMapLocation eventStream error: $err');
+    });
     return () async {
-      await _channel.invokeMethod('stop');
+      await stop();
     };
   }
 
