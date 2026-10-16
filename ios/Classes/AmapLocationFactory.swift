@@ -77,10 +77,6 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
             }
             
             fetchLocationManager?.requestLocation(withReGeocode: true) { (location: CLLocation!,reGeocode: AMapLocationReGeocode!, error: Error!) in
-                if (error != nil) {
-                    print(error)
-                    return result(error.localizedDescription)
-                }
                 if (location != nil) {
                     var dataMap: Dictionary<String, Any> = ["speed": location.speed, "altitude": location.altitude, "latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude, "accuracy": location.horizontalAccuracy, "bearing": location.course >= 0 ? location.course : 0.0]
                     if (reGeocode != nil) {
@@ -91,8 +87,13 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
                         dataMap["district"] = reGeocode.district
                         dataMap["province"] = reGeocode.province
                     }
-                    result(dataMap)
+                    return result(dataMap)
                 }
+                if (error != nil) {
+                    print(error)
+                    return result(error.localizedDescription)
+                }
+                result(nil)
             }
         case "updatePrivacyShow" :
             if let args = methodCall.arguments as? [String: Any] {

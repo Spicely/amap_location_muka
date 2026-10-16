@@ -32,13 +32,36 @@ class AmapLocationMukaPlugin :
     private lateinit var eventChannel: EventChannel
     private lateinit var pluginBinding: FlutterPlugin.FlutterPluginBinding
     private var eventSink: EventChannel.EventSink? = null
-    private lateinit var watchClient: AMapLocationClient
+    private var watchClient: AMapLocationClient? = null
     private var channelId: String = "plugins.muka.com/amap_location_server"
     private var notificationManager: NotificationManager? = null
     private var isCreateChannel = false
     private var msgId = -1
     private var wakeLock: PowerManager.WakeLock? = null
-    private lateinit var mGeoFenceClient: GeoFenceClient
+    private var mGeoFenceClient: GeoFenceClient? = null
+
+    private fun ensureWatchClient(): AMapLocationClient {
+        AMapLocationClient.updatePrivacyShow(pluginBinding.applicationContext, true, true)
+        AMapLocationClient.updatePrivacyAgree(pluginBinding.applicationContext, true)
+        if (watchClient == null) {
+            val client = AMapLocationClient(pluginBinding.applicationContext)
+            client.setLocationListener {
+                if (it != null) {
+                    if (it.errorCode == 0) {
+                        eventSink?.success(Convert.toJson(it))
+                    } else {
+                        eventSink?.error(
+                                "AmapError",
+                                "onLocationChanged Error: ${it.errorInfo} (code=${it.errorCode})",
+                                it.errorInfo
+                        )
+                    }
+                }
+            }
+            watchClient = client
+        }
+        return watchClient!!
+    }
 
     override fun onAttachedToEngine(
             @NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding
@@ -62,55 +85,61 @@ class AmapLocationMukaPlugin :
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
             "fetch" -> {
-                var mode: Any? = call.argument("mode")
-                var locationClient = AMapLocationClient(pluginBinding.applicationContext)
-                var locationOption = AMapLocationClientOption()
-                locationOption.locationMode =
-                        when (mode) {
-                            1 -> AMapLocationClientOption.AMapLocationMode.Battery_Saving
-                            2 -> AMapLocationClientOption.AMapLocationMode.Device_Sensors
-                            else -> AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
+                try {
+                    AMapLocationClient.updatePrivacyShow(pluginBinding.applicationContext, true, true)
+                    AMapLocationClient.updatePrivacyAgree(pluginBinding.applicationContext, true)
+                    val mode: Any? = call.argument("mode")
+                    val locationClient = AMapLocationClient(pluginBinding.applicationContext)
+                    val locationOption = AMapLocationClientOption()
+                    locationOption.locationMode =
+                            when (mode) {
+                                1 -> AMapLocationClientOption.AMapLocationMode.Battery_Saving
+                                2 -> AMapLocationClientOption.AMapLocationMode.Device_Sensors
+                                else -> AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
+                            }
+                    locationOption.isOnceLocation = true
+                    locationOption.isNeedAddress = true
+                    locationOption.isSensorEnable = true
+                    locationClient.setLocationOption(locationOption)
+                    var replied = false
+                    locationClient.setLocationListener {
+                        if (!replied && it != null) {
+                            replied = true
+                            if (it.errorCode == 0) {
+                                result.success(Convert.toJson(it))
+                            } else {
+                                result.error(
+                                        "AmapError",
+                                        "onLocationChanged Error: ${it.errorInfo} (code=${it.errorCode})",
+                                        it.errorInfo
+                                )
+                            }
                         }
-                locationOption.isSensorEnable = true
-                locationClient.setLocationOption(locationOption)
-                locationClient.setLocationListener {
-                    if (it != null) {
-                        if (it.errorCode == 0) {
-                            result.success(Convert.toJson(it))
-                        } else {
-                            result.error(
-                                    "AmapError",
-                                    "onLocationChanged Error: ${it.errorInfo}",
-                                    it.errorInfo
-                            )
-                        }
+                        try {
+                            locationClient.stopLocation()
+                            locationClient.onDestroy()
+                        } catch (_: Throwable) {}
                     }
-                    locationClient.stopLocation()
+                    locationClient.startLocation()
+                } catch (e: Throwable) {
+                    result.error("AmapError", e.message ?: "AMap fetch failed", null)
                 }
-                locationClient.startLocation()
             }
             "setApiKey" -> {
-                setApiKey(call.arguments as Map<*, *>)
-                watchClient = AMapLocationClient(pluginBinding.applicationContext)
-                watchClient.setLocationListener {
-                    if (it != null) {
-                        if (it.errorCode == 0) {
-                            eventSink?.success(Convert.toJson(it))
-                        } else {
-                            eventSink?.error(
-                                    "AmapError",
-                                    "onLocationChanged Error: ${it.errorInfo}",
-                                    it.errorInfo
-                            )
-                        }
-                    }
+                try {
+                    AMapLocationClient.updatePrivacyShow(pluginBinding.applicationContext, true, true)
+                    AMapLocationClient.updatePrivacyAgree(pluginBinding.applicationContext, true)
+                    setApiKey(call.arguments as? Map<*, *>)
+                    ensureWatchClient()
+                    mGeoFenceClient = GeoFenceClient(pluginBinding.applicationContext)
+                    result.success(true)
+                } catch (e: Throwable) {
+                    result.error("AmapError", e.message ?: "setApiKey failed", null)
                 }
-                mGeoFenceClient = GeoFenceClient(pluginBinding.applicationContext)
-                result.success(null)
             }
             "updatePrivacyShow" -> {
-                var hasContains: Boolean = call.argument("hasContains")!!
-                var hasShow: Boolean = call.argument("hasShow")!!
+                val hasContains: Boolean = call.argument("hasContains") ?: true
+                val hasShow: Boolean = call.argument("hasShow") ?: true
                 AMapLocationClient.updatePrivacyShow(
                         pluginBinding.applicationContext,
                         hasContains,
@@ -119,44 +148,50 @@ class AmapLocationMukaPlugin :
                 result.success(true)
             }
             "updatePrivacyAgree" -> {
-                var hasAgree: Boolean = call.argument("hasAgree")!!
+                val hasAgree: Boolean = call.argument("hasAgree") ?: true
                 AMapLocationClient.updatePrivacyAgree(pluginBinding.applicationContext, hasAgree)
                 result.success(true)
             }
             "start" -> {
-                var mode: Any? = call.argument("mode")
-                var time: Int = call.argument<Int>("time") ?: 2000
-                var locationOption = AMapLocationClientOption()
-                locationOption.locationMode =
-                        when (mode) {
-                            1 -> AMapLocationClientOption.AMapLocationMode.Battery_Saving
-                            2 -> AMapLocationClientOption.AMapLocationMode.Device_Sensors
-                            else -> AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
-                        }
-                locationOption.interval = time.toLong()
-                locationOption.isSensorEnable = true
-                watchClient.setLocationOption(locationOption)
-                watchClient.startLocation()
-                result.success(null)
+                try {
+                    val client = ensureWatchClient()
+                    val mode: Any? = call.argument("mode")
+                    val time: Int = call.argument<Int>("time") ?: 2000
+                    val locationOption = AMapLocationClientOption()
+                    locationOption.locationMode =
+                            when (mode) {
+                                1 -> AMapLocationClientOption.AMapLocationMode.Battery_Saving
+                                2 -> AMapLocationClientOption.AMapLocationMode.Device_Sensors
+                                else -> AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
+                            }
+                    locationOption.interval = time.toLong()
+                    locationOption.isNeedAddress = true
+                    locationOption.isSensorEnable = true
+                    client.setLocationOption(locationOption)
+                    client.startLocation()
+                    result.success(null)
+                } catch (e: Throwable) {
+                    result.error("AmapError", e.message ?: "AMap start failed", null)
+                }
             }
             "stop" -> {
-                watchClient.stopLocation()
+                watchClient?.stopLocation()
                 result.success(null)
             }
             "enableBackground" -> {
-                watchClient.enableBackgroundLocation(
+                ensureWatchClient().enableBackgroundLocation(
                         2001,
                         buildNotification(
                                 call.argument("title") ?: "",
                                 call.argument("label") ?: "",
                                 call.argument("assetName") ?: "",
-                                call.argument<Boolean>("vibrate")!!
+                                call.argument<Boolean>("vibrate") ?: true
                         )
                 )
                 result.success(null)
             }
             "disableBackground" -> {
-                watchClient.disableBackgroundLocation(true)
+                watchClient?.disableBackgroundLocation(true)
                 notificationManager?.deleteNotificationChannel(channelId)
                 result.success(null)
             }
@@ -166,7 +201,7 @@ class AmapLocationMukaPlugin :
                 var poiType = (call.argument("poiType") as String?)!!
                 var city = (call.argument("city") as String?)!!
                 var customId = (call.argument("customId") as String?)!!
-                mGeoFenceClient.addGeoFence(keyword, poiType, city, 1, customId)
+                mGeoFenceClient?.addGeoFence(keyword, poiType, city, 1, customId)
             }
             "addGeoFencePoint" -> {
                 /// 根据周边POI创建围栏
@@ -178,7 +213,7 @@ class AmapLocationMukaPlugin :
                 var centerPoint = DPoint()
                 centerPoint.latitude = point["latitude"] as Double
                 centerPoint.longitude = point["longitude"] as Double
-                mGeoFenceClient.addGeoFence(
+                mGeoFenceClient?.addGeoFence(
                         keyword,
                         poiType,
                         centerPoint,
@@ -191,7 +226,7 @@ class AmapLocationMukaPlugin :
                 /// 创建行政区划围栏
                 var keyword = (call.argument("keyword") as String?)!!
                 var customId = (call.argument("customId") as String?)!!
-                mGeoFenceClient.addGeoFence(keyword, customId)
+                mGeoFenceClient?.addGeoFence(keyword, customId)
             }
             "addGeoFenceDiy" -> {
                 /// 创建自定义围栏
@@ -201,7 +236,7 @@ class AmapLocationMukaPlugin :
                 var centerPoint = DPoint()
                 centerPoint.latitude = point["latitude"] as Double
                 centerPoint.longitude = point["longitude"] as Double
-                mGeoFenceClient.addGeoFence(centerPoint, radius.toFloat(), customId)
+                mGeoFenceClient?.addGeoFence(centerPoint, radius.toFloat(), customId)
             }
             "addGeoFencePolygon" -> {
                 /// 创建自定义围栏
@@ -211,7 +246,7 @@ class AmapLocationMukaPlugin :
                 points.forEach {
                     pois.add(DPoint(it?.get("latitude") as Double, it["longitude"] as Double))
                 }
-                mGeoFenceClient.addGeoFence(pois, customId)
+                mGeoFenceClient?.addGeoFence(pois, customId)
             }
             else -> {
                 result.notImplemented()
@@ -234,8 +269,8 @@ class AmapLocationMukaPlugin :
         //        setAppBackgroundPlayer()
         acquireWakeLock()
         // 刷新定位
-        if (watchClient.isStarted) {
-            watchClient.startLocation()
+        if (watchClient?.isStarted == true) {
+            watchClient?.startLocation()
         }
         return super.onStartCommand(intent, flags, startId)
     }
